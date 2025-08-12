@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>قائمة المهام اليومية</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #fef8f0;
+        text-align: center;
+        padding: 20px;
+    }
+    h1 {
+        color: #d97706;
+    }
+    .input-container {
+        margin: 20px 0;
+    }
+    input {
+        padding: 10px;
+        width: 60%;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+    button {
+        padding: 10px 15px;
+        background-color: #f97316;
+        border: none;
+        color: white;
+        font-weight: bold;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #ea580c;
+    }
+    ul {
+        list-style: none;
+        padding: 0;
+        max-width: 400px;
+        margin: auto;
+    }
+    li {
+        background: white;
+        margin: 5px 0;
+        padding: 10px;
+        border-radius: 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .delete {
+        background-color: red;
+        border: none;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+
+<h1>📋 قائمة المهام اليومية</h1>
+
+<div class="input-container">
+    <input type="text" id="taskInput" placeholder="أدخل مهمة جديدة...">
+    <button onclick="addTask()">➕ إضافة</button>
+</div>
+
+<ul id="taskList"></ul>
+
+<script>
+    function addTask() {
+        let input = document.getElementById("taskInput");
+        let task = input.value.trim();
+        if (task !== "") {
+            let li = document.createElement("li");
+            li.innerHTML = `${task} <button class="delete" onclick="deleteTask(this)">❌</button>`;
+            document.getElementById("taskList").appendChild(li);
+            saveTasks();
+            input.value = "";
+        }
+    }
+
+    function deleteTask(button) {
+        button.parentElement.remove();
+        saveTasks();
+    }
+
+    function saveTasks() {
+        let tasks = [];
+        document.querySelectorAll("#taskList li").forEach(li => {
+            tasks.push(li.firstChild.textContent.trim());
+        });
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+
+    function loadTasks() {
+        let savedTasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+        savedTasks.forEach(task => {
+            let li = document.createElement("li");
+            li.innerHTML = `${task} <button class="delete" onclick="deleteTask(this)">❌</button>`;
+            document.getElementById("taskList").appendChild(li);
+        });
+    }
+
+    loadTasks();
+</script>
+
+</body>
+</html>
